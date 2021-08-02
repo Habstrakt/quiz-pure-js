@@ -5,8 +5,14 @@ const btnPrev = document.querySelectorAll('[data-btn="back"]');
 btnNext.forEach(function(button) {
   button.addEventListener('click', function() {
     const currentCard = button.closest('[data-card]');
-    
-    navigate('next', currentCard)
+
+    if(currentCard.dataset.validate == 'novalidate') {
+      navigate('next', currentCard)
+      console.log('no validate');
+    } else {
+      navigate('next', currentCard)
+      console.log('validate');
+    }
   })
 })
 
