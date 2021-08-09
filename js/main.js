@@ -21,7 +21,14 @@ btnNext.forEach(function(button) {
 
       saveAnswer(thisCardNum, gatherCardData(thisCardNum));
 
-      navigate('next', thisCard);
+      
+      if(isFilled(thisCardNum)) {
+        navigate('next', thisCard);
+      } else {
+        alert('Выберите ответ, прежде чем переходить далее.');
+      }
+
+      
     }
   })
 })
@@ -106,4 +113,12 @@ return data
 
 function saveAnswer(number, data) {
   answers[number] = data; 
+}
+
+function isFilled(number) {
+  if(answers[number].answer.length > 0) {
+    return true
+  } else {
+    return false
+  }
 }
