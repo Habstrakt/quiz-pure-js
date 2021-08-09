@@ -22,7 +22,7 @@ btnNext.forEach(function(button) {
       saveAnswer(thisCardNum, gatherCardData(thisCardNum));
 
       
-      if(isFilled(thisCardNum)) {
+      if(isFilled(thisCardNum) && checkOnRequired(thisCardNum)) {
         navigate('next', thisCard);
       } else {
         alert('Выберите ответ, прежде чем переходить далее.');
@@ -117,6 +117,43 @@ function saveAnswer(number, data) {
 
 function isFilled(number) {
   if(answers[number].answer.length > 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
+
+function validateEmail(email) {
+  let pattern = /^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i;
+  
+  return pattern.test(email);
+}
+
+function checkOnRequired(number) {
+  const currentCard = document.querySelector(`[data-card="${number}"]`);
+  const requiredFields = currentCard.querySelectorAll("[required]");
+  
+  let isValidArray = [];
+  
+
+  requiredFields.forEach(function(item) {
+    console.dir(item.type);
+    console.dir(item.value);
+
+    if(item.type === 'checkbox' && item.checked === false) {
+      isValidArray.push(false);
+    } else if(item.type === 'email') {
+      if(validateEmail(item.value)) {
+        isValidArray.push(true);
+      } else {
+        isValidArray.push(false);
+      }
+    }
+  });
+
+
+  if(isValidArray.indexOf(false) === -1) {
     return true
   } else {
     return false
