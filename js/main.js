@@ -12,13 +12,16 @@ const answers = {
 btnNext.forEach(function(button) {
   button.addEventListener('click', function() {
     const thisCard = button.closest('[data-card]');
+    const thisCardNum = +thisCard.dataset.card;
 
     if(thisCard.dataset.validate == 'novalidate') {
       navigate('next', thisCard)
       console.log('no validate');
     } else {
-      navigate('next', thisCard)
-      console.log('validate');
+
+      saveAnswer(thisCardNum, gatherCardData(thisCardNum));
+
+      navigate('next', thisCard);
     }
   })
 })
@@ -99,4 +102,8 @@ const data = {
 }
 
 return data
+}
+
+function saveAnswer(number, data) {
+  answers[number] = data; 
 }
