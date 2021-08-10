@@ -174,3 +174,13 @@ document.querySelectorAll('.radio-group').forEach(function(item) {
     label.classList.add('radio-block--active');
   })
 })
+
+document.querySelectorAll('label.checkbox-block input[type="checkbox"]').forEach(function(item) {
+  item.addEventListener('change', function() {
+    if(item.checked) {
+      item.closest('label').classList.add('checkbox-block--active');
+    } else {
+      item.closest('label').classList.remove('checkbox-block--active');
+    }
+  })
+})
