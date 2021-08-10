@@ -15,8 +15,8 @@ btnNext.forEach(function(button) {
     const thisCardNum = +thisCard.dataset.card;
 
     if(thisCard.dataset.validate == 'novalidate') {
-      navigate('next', thisCard)
-      console.log('no validate');
+      navigate('next', thisCard);
+      updateProgressBar('next', thisCardNum);
     } else {
 
       saveAnswer(thisCardNum, gatherCardData(thisCardNum));
@@ -24,6 +24,7 @@ btnNext.forEach(function(button) {
       
       if(isFilled(thisCardNum) && checkOnRequired(thisCardNum)) {
         navigate('next', thisCard);
+        updateProgressBar('next', thisCardNum);
       } else {
         alert('Выберите ответ, прежде чем переходить далее.');
       }
@@ -36,11 +37,36 @@ btnNext.forEach(function(button) {
 btnPrev.forEach(function(button) {
   button.addEventListener('click', function() {
     const thisCard = button.closest('[data-card]');
+    const thisCardNum = +thisCard.dataset.card;
     
     navigate('back', thisCard)
+    updateProgressBar('back', thisCardNum);
   })
 })
 
+document.querySelectorAll('.radio-group').forEach(function(item) {
+  item.addEventListener('click', function(event) {
+
+    const label = event.target.closest('label');
+
+    if(label) {
+      label.closest('.radio-group').querySelectorAll('label').forEach(function(item) {
+        item.classList.remove('radio-block--active');
+      })
+    }
+    label.classList.add('radio-block--active');
+  })
+})
+
+document.querySelectorAll('label.checkbox-block input[type="checkbox"]').forEach(function(item) {
+  item.addEventListener('change', function() {
+    if(item.checked) {
+      item.closest('label').classList.add('checkbox-block--active');
+    } else {
+      item.closest('label').classList.remove('checkbox-block--active');
+    }
+  })
+})
 
 function navigate(route, currentCard) {
   const currentCardNum = +currentCard.getAttribute('data-card');
@@ -81,7 +107,6 @@ function gatherCardData(number) {
 const checkBoxsValues = currentCard.querySelectorAll('[type="checkbox"]');
 
 checkBoxsValues.forEach(function(item) {
-  console.dir(item);
 
   if(item.checked) {
     result.push({
@@ -138,8 +163,6 @@ function checkOnRequired(number) {
   
 
   requiredFields.forEach(function(item) {
-    console.dir(item.type);
-    console.dir(item.value);
 
     if(item.type === 'checkbox' && item.checked === false) {
       isValidArray.push(false);
@@ -160,27 +183,25 @@ function checkOnRequired(number) {
   }
 }
 
+function updateProgressBar(direction, cardNum) {
+  const cardsTotalNum = document.querySelectorAll('[data-card]').length;
 
-document.querySelectorAll('.radio-group').forEach(function(item) {
-  item.addEventListener('click', function(event) {
+  if(direction === 'next'){
+    cardNum += 1
+  } else if( direction === 'prev') {
+    cardNum -= 1
+  }
 
-    const label = event.target.closest('label');
+  const progress = ((cardNum * 100) / cardsTotalNum).toFixed();
 
-    if(label) {
-      label.closest('.radio-group').querySelectorAll('label').forEach(function(item) {
-        item.classList.remove('radio-block--active');
-      })
-    }
-    label.classList.add('radio-block--active');
-  })
-})
 
-document.querySelectorAll('label.checkbox-block input[type="checkbox"]').forEach(function(item) {
-  item.addEventListener('change', function() {
-    if(item.checked) {
-      item.closest('label').classList.add('checkbox-block--active');
-    } else {
-      item.closest('label').classList.remove('checkbox-block--active');
-    }
-  })
-})
+  const progressBar = document.querySelector(`[data-card="${cardNum}"]`).querySelector('.progress');
+
+  if(progressBar) {
+    progressBar.querySelector('.progress__label strong').innerText = `${progress}%`;
+
+    progressBar.querySelector('.progress__line-bar').style = `width: ${progress}%`;
+  }
+
+}
+
